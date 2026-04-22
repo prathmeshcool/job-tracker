@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const app = express();
 const Job = require("./models/Job");
@@ -8,16 +9,12 @@ const Job = require("./models/Job");
 app.use(cors());
 app.use(express.json());
 
-// 🔗 Connect MongoDB
-require("dotenv").config();
-
-mongoose.connect(process.env.MONGO_URI)
-
 // Test route
 app.get("/", (req, res) => {
   res.send("Backend is running");
 });
 
+// Create job
 app.post("/jobs", async (req, res) => {
   try {
     const newJob = new Job(req.body);
@@ -28,6 +25,7 @@ app.post("/jobs", async (req, res) => {
   }
 });
 
+// Get all jobs
 app.get("/jobs", async (req, res) => {
   try {
     const jobs = await Job.find();
@@ -37,6 +35,7 @@ app.get("/jobs", async (req, res) => {
   }
 });
 
+// Delete job
 app.delete("/jobs/:id", async (req, res) => {
   try {
     await Job.findByIdAndDelete(req.params.id);
@@ -46,6 +45,7 @@ app.delete("/jobs/:id", async (req, res) => {
   }
 });
 
+// Update job
 app.put("/jobs/:id", async (req, res) => {
   try {
     const updatedJob = await Job.findByIdAndUpdate(
@@ -53,15 +53,30 @@ app.put("/jobs/:id", async (req, res) => {
       req.body,
       { new: true }
     );
+
     res.json(updatedJob);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-const PORT = process.env.PORT || 5000;
+// Start server only after DB connects
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+    console.log("Connected to MongoDB");
 
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+  } catch (error) {
+    console.log("MongoDB connection error:");
+    console.log(error);
+  }
+};
+
+startServer();
