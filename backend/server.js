@@ -9,9 +9,9 @@ app.use(cors());
 app.use(express.json());
 
 // 🔗 Connect MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/jobtracker")
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+require("dotenv").config();
+
+mongoose.connect(process.env.MONGO_URI)
 
 // Test route
 app.get("/", (req, res) => {
