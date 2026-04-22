@@ -17,7 +17,7 @@ function App() {
   };
 
   const fetchJobs = async () => {
-    const res = await axios.get("http://localhost:5000/jobs");
+    const res = await axios.get("https://job-tracker-backend-kjzt.onrender.com/jobs");
     setJobs(res.data);
   };
 
@@ -33,7 +33,7 @@ function App() {
       return;
     }
 
-    await axios.post("http://localhost:5000/jobs", job);
+    await axios.post("https://job-tracker-backend-kjzt.onrender.com/jobs", job);
 
     fetchJobs();
 
@@ -45,12 +45,12 @@ function App() {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:5000/jobs/${id}`);
+    await axios.delete(`https://job-tracker-backend-kjzt.onrender.com/jobs/${id}`);
     fetchJobs();
   };
 
   const handleStatusChange = async (id, newStatus) => {
-    await axios.put(`http://localhost:5000/jobs/${id}`, {
+    await axios.put(`https://job-tracker-backend-kjzt.onrender.com/jobs/${id}`, {
       status: newStatus,
     });
 
